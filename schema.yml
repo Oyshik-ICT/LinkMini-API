@@ -1,0 +1,193 @@
+openapi: 3.0.3
+info:
+  title: ''
+  version: 0.0.0
+paths:
+  /create-url/:
+    post:
+      operationId: create_url_create
+      tags:
+      - create-url
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UrlMapping'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UrlMapping'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UrlMapping'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UrlMapping'
+          description: ''
+  /shorten/{short_url}:
+    get:
+      operationId: shorten_retrieve
+      parameters:
+      - in: path
+        name: short_url
+        schema:
+          type: string
+        required: true
+      tags:
+      - shorten
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UrlMapping'
+          description: ''
+    put:
+      operationId: shorten_update
+      parameters:
+      - in: path
+        name: short_url
+        schema:
+          type: string
+        required: true
+      tags:
+      - shorten
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UrlMapping'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UrlMapping'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UrlMapping'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UrlMapping'
+          description: ''
+    patch:
+      operationId: shorten_partial_update
+      parameters:
+      - in: path
+        name: short_url
+        schema:
+          type: string
+        required: true
+      tags:
+      - shorten
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUrlMapping'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUrlMapping'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUrlMapping'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UrlMapping'
+          description: ''
+    delete:
+      operationId: shorten_destroy
+      parameters:
+      - in: path
+        name: short_url
+        schema:
+          type: string
+        required: true
+      tags:
+      - shorten
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+components:
+  schemas:
+    PatchedUrlMapping:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        short_url:
+          type: string
+          readOnly: true
+        long_url:
+          type: string
+          maxLength: 100
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date
+          readOnly: true
+    UrlMapping:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        short_url:
+          type: string
+          readOnly: true
+        long_url:
+          type: string
+          maxLength: 100
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date
+          readOnly: true
+      required:
+      - created_at
+      - id
+      - long_url
+      - short_url
+      - updated_at
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid
