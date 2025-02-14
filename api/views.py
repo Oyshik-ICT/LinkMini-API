@@ -35,13 +35,17 @@ class CreateUrlAPIView(APIView):
         - Stores it in the database.
         - Returns the short URL in the response.
         """
+        MAX_ATTEMPTS = 10  # Set a reasonable limit
+        attempts = 0
         try:
 
-            while True:
+            while attempts < MAX_ATTEMPTS:
                 short_url = self.prefix_url + self.generate_short_url()
 
                 if not UrlMapping.objects.filter(short_url=short_url).exists():
                     break
+
+                attempts += 1
 
             serializer = self.serializer_class(data=request.data)
             if serializer.is_valid():
@@ -74,7 +78,7 @@ class RedirectToLongUrl(APIView):
     """
     Redirects a short URL to its original long URL.
     """
-
+    throttle_classes = [UserRateThrottle, AnonRateThrottle]
     def get(self, request, short_url):
         object = get_object_or_404(UrlMapping, short_url=short_url)
 
