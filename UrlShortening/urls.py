@@ -29,6 +29,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("create-url/", CreateUrlAPIView.as_view(), name="create-url"),
     path("shorten/<path:short_url>", RetriveUpdateDeleteUrlAPIView.as_view()),
+    path("original/<path:short_url>", RedirectToLongUrl.as_view()),
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
     # Optional UI:
     path(

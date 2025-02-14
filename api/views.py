@@ -1,11 +1,11 @@
 import logging
 
 import shortuuid
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, redirect
 from rest_framework import generics, status
 from rest_framework.response import Response
+from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
 from rest_framework.views import APIView
-from rest_framework.throttling import UserRateThrottle, AnonRateThrottle
 
 from .models import UrlMapping
 from .serializers import UrlMappingSerializer
@@ -68,3 +68,14 @@ class RetriveUpdateDeleteUrlAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = UrlMapping.objects.all()
     lookup_field = "short_url"
     lookup_url_kwarg = "short_url"
+
+
+class RedirectToLongUrl(APIView):
+    """
+    Redirects a short URL to its original long URL.
+    """
+
+    def get(self, request, short_url):
+        object = get_object_or_404(UrlMapping, short_url=short_url)
+
+        return redirect(object.long_url)
